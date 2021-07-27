@@ -3,8 +3,8 @@
     <div class="todo-container">
       <div class="todo-wrap">
         <todo-header :addTodo="addTodo"/>
-        <todo-list :todos="todos" />
-        <todo-footer />
+        <todo-list :todos="todos" :removeTodo="removeTodo" :doneTodo="doneTodo"/>
+        <todo-footer :todos="todos" />
       </div>
     </div>
   </div>
@@ -31,6 +31,13 @@ export default {
   methods: {
     addTodo(todo){
       this.todos.unshift(todo)
+    },
+    removeTodo(todoId){
+      this.todos = this.todos.filter(todo=>todo.id!==todoId)
+    },
+    doneTodo(todoId){
+      let todo = this.todos.find(todo=>todo.id===todoId)
+      todo.done=!todo.done
     }
   }
 };

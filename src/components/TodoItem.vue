@@ -1,17 +1,17 @@
 <template>
   <li>
     <label>
-      <input type="checkbox" :checked="todo.done" />
+      <input type="checkbox" :checked="todo.done" @change="doneTodo(todo.id)" />
       <span>{{ todo.title }}</span>
     </label>
-    <button class="btn btn-danger" style="display: none">删除</button>
+    <button class="btn btn-danger" @click="removeTodo(todo.id)">删除</button>
   </li>
 </template>
 
 <script>
 export default {
   name: "TodoItem",
-  props: ["todo"],
+  props: ["todo", "removeTodo", "doneTodo"]
 };
 </script>
 
@@ -41,6 +41,10 @@ li button {
   float: right;
   display: none;
   margin-top: 3px;
+}
+
+li:hover button {
+  display: block;
 }
 
 li:before {

@@ -1,6 +1,6 @@
 <template>
   <ul class="todo-main">
-    <todo-item v-for="todo in todos" :key="todo.id" :todo="todo"/>
+    <todo-item v-for="todo in todos" :key="todo.id" :todo="todo" :removeTodo="removeTodo" :doneTodo="doneTodo"/>
   </ul>
 </template>
 
@@ -9,7 +9,7 @@ import TodoItem from "./TodoItem.vue";
 export default {
   name: "TodoList",
   components: { TodoItem },
-  props: ["todos"]
+  props: ["todos", "removeTodo", "doneTodo"]
 };
 </script>
 
