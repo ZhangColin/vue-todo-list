@@ -2,9 +2,13 @@
   <div id="app">
     <div class="todo-container">
       <div class="todo-wrap">
-        <todo-header :addTodo="addTodo"/>
-        <todo-list :todos="todos" :removeTodo="removeTodo" :doneTodo="doneTodo"/>
-        <todo-footer :todos="todos" />
+        <todo-header @addTodo="addTodo" />
+        <todo-list :todos="todos"/>
+        <todo-footer
+          :todos="todos"
+          @checkAllTodo="checkAllTodo"
+          @clearAllTodo="clearAllTodo"
+        />
       </div>
     </div>
   </div>
@@ -24,21 +28,43 @@ export default {
   },
   data() {
     return {
-      todos: [
-      ],
+      todos: JSON.parse(localStorage.getItem("todos")) || [],
     };
   },
+  watch: {
+    todos: {
+      deep: true,
+      handler(value) {
+        localStorage.setItem("todos", JSON.stringify(value));
+      },
+    },
+  },
   methods: {
-    addTodo(todo){
-      this.todos.unshift(todo)
+    addTodo(todo) {
+      this.todos.unshift(todo);
     },
-    removeTodo(todoId){
-      this.todos = this.todos.filter(todo=>todo.id!==todoId)
+    removeTodo(todoId) {
+      this.todos = this.todos.filter((todo) => todo.id !== todoId);
     },
-    doneTodo(todoId){
-      let todo = this.todos.find(todo=>todo.id===todoId)
-      todo.done=!todo.done
-    }
+    checkTodo(todoId) {
+      let todo = this.todos.find((todo) => todo.id === todoId);
+      todo.done = !todo.done;
+    },
+    checkAllTodo(done) {
+      this.todos.forEach((todo) => (todo.done = done));
+    },
+    clearAllTodo() {
+      this.todos = this.todos.filter((todo) => !todo.done);
+    },
+  },
+  mounted () {
+    this.$bus.$on('checkTodo', this.checkTodo);
+    this.$bus.$on('removeTodo', this.removeTodo);
+  
+  },
+  beforeDestroy () {
+    this.$bus.$off('ckeckTodo');
+    this.$bus.$off('removeTodo');
   }
 };
 </script>

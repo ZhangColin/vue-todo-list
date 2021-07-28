@@ -1,15 +1,15 @@
 <template>
   <ul class="todo-main">
-    <todo-item v-for="todo in todos" :key="todo.id" :todo="todo" :removeTodo="removeTodo" :doneTodo="doneTodo"/>
+    <todo-item v-for="todo in todos" :key="todo.id" :todo="todo" />
   </ul>
 </template>
 
 <script>
 import TodoItem from "./TodoItem.vue";
 export default {
-  name: "TodoList",
+  name: 'TodoList',
   components: { TodoItem },
-  props: ["todos", "removeTodo", "doneTodo"]
+  props: ['todos']
 };
 </script>
 
