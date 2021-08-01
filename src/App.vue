@@ -3,7 +3,7 @@
     <div class="todo-container">
       <div class="todo-wrap">
         <todo-header @addTodo="addTodo" />
-        <todo-list :todos="todos"/>
+        <todo-list :todos="todos" />
         <todo-footer
           :todos="todos"
           @checkAllTodo="checkAllTodo"
@@ -43,6 +43,9 @@ export default {
     addTodo(todo) {
       this.todos.unshift(todo);
     },
+    updateTodo(todoId, newTitle) {
+      this.todos.find((todo) => todo.id === todoId).title = newTitle;
+    },
     removeTodo(todoId) {
       this.todos = this.todos.filter((todo) => todo.id !== todoId);
     },
@@ -57,15 +60,16 @@ export default {
       this.todos = this.todos.filter((todo) => !todo.done);
     },
   },
-  mounted () {
-    this.$bus.$on('checkTodo', this.checkTodo);
-    this.$bus.$on('removeTodo', this.removeTodo);
-  
+  mounted() {
+    this.$bus.$on("checkTodo", this.checkTodo);
+    this.$bus.$on("removeTodo", this.removeTodo);
+    this.$bus.$on("updateTodo", this.updateTodo);
   },
-  beforeDestroy () {
-    this.$bus.$off('ckeckTodo');
-    this.$bus.$off('removeTodo');
-  }
+  beforeDestroy() {
+    this.$bus.$off("ckeckTodo");
+    this.$bus.$off("removeTodo");
+    this.$bus.$off("updateTodo");
+  },
 };
 </script>
 
@@ -93,6 +97,13 @@ body {
   color: #fff;
   background-color: #da4f49;
   border: 1px solid #bd362f;
+}
+
+.btn-edit {
+  color: #fff;
+  background-color: skyblue;
+  border: 1px solid rgb(103, 159, 180);
+  margin-right: 5px;
 }
 
 .btn-danger:hover {

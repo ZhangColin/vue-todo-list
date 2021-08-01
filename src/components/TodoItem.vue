@@ -1,25 +1,55 @@
 <template>
   <li>
-    <label>
-      <input type="checkbox" :checked="todo.done" @change="checkTodo" />
+    <label v-if="!isEdit">
+      <input type="checkbox" :checked="todo.done" @change="handleCheck" />
       <span>{{ todo.title }}</span>
     </label>
-    <button class="btn btn-danger" @click="removeTodo">删除</button>
+    <input
+      type="text"
+      ref="titleTextBox"
+      :value="todo.title"
+      v-if="isEdit"
+      @blur="handleSave($event)"
+      @keyup.enter="handleSave($event)"
+    />
+    <button class="btn btn-danger" @click="handleDelete">删除</button>
+    <button class="btn btn-edit" @click="handleEdit" v-if="!isEdit">
+      编辑
+    </button>
   </li>
 </template>
 
 <script>
 export default {
-  name: 'TodoItem',
-  props: ['todo'],
+  name: "TodoItem",
+  data() {
+    return {
+      isEdit: false,
+    };
+  },
+  props: ["todo"],
   methods: {
-    checkTodo(){
-      this.$bus.$emit('checkTodo', this.todo.id);
+    handleCheck() {
+      this.$bus.$emit("checkTodo", this.todo.id);
     },
-    removeTodo(){
-      this.$bus.$emit('removeTodo', this.todo.id);
-    }
-  }
+    handleDelete() {
+      this.$bus.$emit("removeTodo", this.todo.id);
+    },
+    handleEdit() {
+      this.isEdit = true;
+      this.$nextTick(() => {
+        this.$refs.titleTextBox.focus();
+      });
+    },
+    handleSave(e) {
+      this.isEdit = false;
+      // this.$refs.titleTextBox.value
+      const newTitle = e.target.value.trim();
+      if (newTitle && newTitle !== this.todo.title) {
+        this.$bus.$emit("updateTodo", this.todo.id, e.target.value);
+      }
+    },
+  },
 };
 </script>
 
